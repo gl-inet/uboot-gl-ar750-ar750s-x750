@@ -34,6 +34,25 @@
 /*-----------------------------------------------------------------------
  * FLASH and environment organization
  */
+
+/*
+ *define gl environment
+*/
+
+#define COMMAND_LF "if ping $serverip; then tftp $loadaddr $firmware_name && erase $firmware_addr +$filesize && cp.b $fileaddr $firmware_addr $filesize && echo OK!; else ERROR! Server not reachable!; fi" 
+
+#define VAR_FIRMWARE_ADDR 0x9f060000
+#define VAR_FIRMWARE_NAME "openwrt-gl-ar150.bin"
+
+#define COMMAND_LU "if ping $serverip; then tftp $loadaddr $uboot_name && erase $uboot_addr +$uboot_size && cp.b $fileaddr $uboot_addr $filesize && echo OK!; else ERROR! Server not reachable!; fi"
+
+#define VAR_UBOOT_ADDR	0x9f000000
+#define VAR_UBOOT_SIZE	0x00050000
+#define VAR_UBOOT_NAME	"uboot-gl-ar150.bin"
+#define CONFIG_LOADADDR 0x80060000
+
+/*****************gl environment end************/
+
 #define CFG_MAX_FLASH_BANKS	1	/* max number of memory banks */
 #if (FLASH_SIZE == 16)
 #define CFG_MAX_FLASH_SECT	256	/* max number of sectors on one chip */
@@ -373,7 +392,7 @@
 #define CONFIG_COMMANDS			(ATH_CFG_COMMANDS | ATH_EXTRA_CMD)
 
 #define CONFIG_IPADDR			192.168.1.1
-#define CONFIG_SERVERIP			192.168.1.10
+#define CONFIG_SERVERIP			192.168.1.2
 #define CONFIG_ETHADDR			0x00:0xaa:0xbb:0xcc:0xdd:0xee
 #define CFG_FAULT_ECHO_LINK_DOWN	1
 

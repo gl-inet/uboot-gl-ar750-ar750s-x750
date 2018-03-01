@@ -66,6 +66,35 @@ uchar (*env_get_char)(int) = env_get_char_init;
 #define MK_STR(x)	XMK_STR(x)
 
 uchar default_environment[] = {
+/*
+ *define gl environment
+*/
+
+#ifdef COMMAND_LF
+	"lf="	COMMAND_LF 		"\0"
+#endif
+#ifdef VAR_FIRMWARE_ADDR
+	"firmware_addr="	MK_STR(VAR_FIRMWARE_ADDR) 		"\0"
+#endif
+#ifdef VAR_FIRMWARE_NAME
+	"firmware_name="	VAR_FIRMWARE_NAME 		"\0"
+#endif
+#ifdef COMMAND_LU
+	"lu="	COMMAND_LU 		"\0"
+#endif
+#ifdef VAR_UBOOT_ADDR
+	"uboot_addr="	MK_STR(VAR_UBOOT_ADDR) 		"\0"
+#endif
+#ifdef VAR_UBOOT_SIZE
+	"uboot_size="	MK_STR(VAR_UBOOT_SIZE) 		"\0"
+#endif
+#ifdef VAR_UBOOT_NAME
+	"uboot_name="	VAR_UBOOT_NAME 		"\0"
+#endif
+
+
+/*****************gl environment end************/
+
 #ifdef	CONFIG_BOOTARGS
 	"bootargs="	CONFIG_BOOTARGS			"\0"
 #endif
@@ -135,10 +164,10 @@ uchar default_environment[] = {
 #if defined(CONFIG_PCI_BOOTDELAY) && (CONFIG_PCI_BOOTDELAY > 0)
 	"pcidelay="	MK_STR(CONFIG_PCI_BOOTDELAY)	"\0"
 #endif
-#ifdef  CONFIG_EXTRA_ENV_SETTINGS
-	CONFIG_EXTRA_ENV_SETTINGS
-#endif
-	"\0"
+//#ifdef  CONFIG_EXTRA_ENV_SETTINGS
+//	CONFIG_EXTRA_ENV_SETTINGS
+//#endif
+//	"\0"
 };
 
 #if defined(CFG_ENV_IS_IN_NAND)		/* Environment is in Nand Flash */
