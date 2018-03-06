@@ -78,6 +78,9 @@ ifndef BOOT_FROM_NAND
 COBJS	+= flash.o
 endif
 
+#add led command
+COBJS	+= cmd_led.o
+
 ifeq ($(VXWORKS_UBOOT),1)
 COBJS	+=  cmd_elf.o
 endif
