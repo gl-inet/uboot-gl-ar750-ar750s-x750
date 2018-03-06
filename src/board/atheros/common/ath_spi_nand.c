@@ -495,7 +495,7 @@ ath_spi_nand_cmd_read_from_cache(ath_spi_nand_sc_t *sc, int start, int len, u_ch
 int
 ath_spi_nand_page_read(struct mtd_info *mtd, loff_t off, u_char *buf, int len)
 {
-	u_char tmp;
+	u_char tmp[mtd->writesize+1];
 	loff_t page = off >> mtd->writesize_shift;
 	int status, byte, ret = 0, eccfail = 0;
 	ath_spi_nand_sc_t	*sc = mtd->priv;
@@ -518,8 +518,8 @@ ath_spi_nand_page_read(struct mtd_info *mtd, loff_t off, u_char *buf, int len)
 		 * to look into the spare area for the BBM, we set the
 		 * wrap configuration to 00'b OR-ed with offset page size.
 		 */
-		byte = mtd->writesize;
-		len  = 1;
+		byte = 0;
+		len  = mtd->writesize+1;
 		buf = &tmp;
 	} else {
 		iodbg("page read\n");
@@ -538,7 +538,7 @@ ath_spi_nand_page_read(struct mtd_info *mtd, loff_t off, u_char *buf, int len)
 
 	if (buf == &tmp) {
 		/* BBM check */
-		if (tmp != 0xff) {
+		if (tmp[mtd->writesize] != 0xff) {
 			ath_spi_nand_set_blk_state(mtd, off, ATH_NAND_BLK_BAD);
 			return 1;	/* Bad Block */
 		} else {
@@ -1445,6 +1445,13 @@ static struct ath_spi_nand_priv ath_spi_nand_ids[] = {
 		(128 << 20),			/* 1G bit */
 		64,				/* oob size */
 	},
+		{ /* EM */
+		0xd5,				/* manufacturer code */
+		{ 0x11, 0x00, 0x00, 0x00 },	/* Device id */
+		0x02,				/* ecc error code */
+		(128 << 20),			/* 1G bit */
+		128,				/* oob size */
+	},
 	/* add new manufacturer here */
 };
 
@@ -1477,9 +1484,9 @@ static void *ath_spi_nand_priv_init(void)
 		}
 	}
 done:
+	printk("MFR:%d,DID:%d\n",vendor_id(id),device_id(id));
 	if (!priv)
 		return NULL;
-
 	switch (priv->mfr) {
 	case 0xc2:
 		priv->ecc_layout = &ath_spi_nand_oob_64_mx;
@@ -1490,6 +1497,7 @@ done:
 		priv->page_read_to_cache = ath_spi_nand_cmd_page_read_to_cache_common;
 		priv->program_execute = ath_spi_nand_cmd_program_execute_common;
 		break;
+	case 0xd5:
 	case 0xc8:
 		if (priv->did[0] == 0xf1) {
 			priv->ecc_layout = &ath_spi_nand_oob_64_gd;

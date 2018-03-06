@@ -48,7 +48,7 @@
 
 #define VAR_UBOOT_ADDR	0x9f000000
 #define VAR_UBOOT_SIZE	0x00050000
-#define VAR_UBOOT_NAME	"uboot-gl-ar150.bin"
+#define VAR_UBOOT_NAME	"openwrt-ar71xx-ap152-dual-qca-legacy-uboot.bin"
 #define CONFIG_LOADADDR 0x80060000
 
 /*****************gl environment end************/
