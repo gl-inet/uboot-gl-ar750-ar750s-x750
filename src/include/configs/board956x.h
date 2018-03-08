@@ -18,6 +18,94 @@
 #ifndef __BOARD_956X_H
 #define __BOARD_956X_H
 
+/* ethernet debug */
+/* #define ET_DEBUG */
+
+#define CFG_CONSOLE_INFO_QUIET
+#define CONFIG_DELAY_TO_AUTORUN_HTTPD 5
+#define CONFIG_BOOTCOUNT_LIMIT
+
+/*
+ * Web Failsafe configuration
+ */
+#define CONFIG_LOADADDR         0x80800000
+#define WEBFAILSAFE_UPLOAD_RAM_ADDRESS                                  CONFIG_LOADADDR
+
+// U-Boot partition size and offset
+#define WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS                                CFG_FLASH_BASE
+
+#if defined(CONFIG_FOR_DLINK_DIR505_A1)
+        #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (64 * 1024)
+        #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x10000"
+#elif defined(CONFIG_FOR_8DEVICES_CARAMBOLA2)
+        #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (256 * 1024)
+        #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x40000"
+#elif defined(CONFIG_FOR_DOMINO)
+        #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (256 * 1024)
+        #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x40000"
+#elif defined(CONFIG_FOR_DRAGINO_V2)
+        #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (192 * 1024)
+        #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x30000"
+#else
+        #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (256 * 1024)
+        #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x40000"
+#endif
+#define CONFIG_FOR_GL_AR300M
+// Firmware partition offset
+#if defined(CONFIG_FOR_DLINK_DIR505_A1)
+        #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x80000
+#elif defined(CONFIG_FOR_8DEVICES_CARAMBOLA2)
+        #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x50000
+#elif defined(CONFIG_FOR_DOMINO) || defined(CONFIG_FOR_GL_AR300M)
+        #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x50000
+#elif defined(CONFIG_FOR_DRAGINO_V2)
+        #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x40000
+#else
+        #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x20000
+#endif
+
+// ART partition size and offset
+#if defined(CONFIG_FOR_DLINK_DIR505_A1)
+        #define WEBFAILSAFE_UPLOAD_ART_ADDRESS                          WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x10000
+#endif
+
+#define WEBFAILSAFE_UPLOAD_ART_SIZE_IN_BYTES                    (64 * 1024)
+
+// max. firmware size <= (FLASH_SIZE -  WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES)
+#if defined(CONFIG_FOR_DLINK_DIR505_A1)
+        // D-Link DIR-505: 64k(U-Boot),64k(ART),64k(MAC),64k(NVRAM),256k(Language)
+        #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES        (512 * 1024)
+#elif defined(CONFIG_FOR_8DEVICES_CARAMBOLA2)
+        // Carambola 2: 256k(U-Boot),64k(U-Boot env),64k(ART)
+        #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES        (384 * 1024)
+#elif defined(CONFIG_FOR_DOMINO)
+        // DOMINO 2: 256k(U-Boot),64k(U-Boot env),64k(ART)
+        #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES        (384 * 1024)
+#elif defined(CONFIG_FOR_DRAGINO_V2)
+        // Dragino 2: 192k(U-Boot),64k(U-Boot env),64k(ART)
+        #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES        (320 * 1024)
+#elif defined(CONFIG_FOR_GS_OOLITE_V1_DEV)
+        // GS-Oolite v1: 128k(U-Boot + MAC),64k(ART)
+        #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES        (192 * 1024)
+#else
+        // TP-Link: 64k(U-Boot),64k(MAC/model/WPS pin block),64k(ART)
+        #define WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES        (192 * 1024)
+#endif
+
+// progress state info
+#define WEBFAILSAFE_PROGRESS_START                              0
+#define WEBFAILSAFE_PROGRESS_TIMEOUT                    1
+#define WEBFAILSAFE_PROGRESS_UPLOAD_READY               2
+#define WEBFAILSAFE_PROGRESS_UPGRADE_READY              3
+#define WEBFAILSAFE_PROGRESS_UPGRADE_FAILED             4
+
+// update type
+#define WEBFAILSAFE_UPGRADE_TYPE_FIRMWARE               0
+#define WEBFAILSAFE_UPGRADE_TYPE_UBOOT                  1
+#define WEBFAILSAFE_UPGRADE_TYPE_ART                    2
+#define WEBFAILSAFE_UPGRADE_TYPE_NOR_FIRMWARE           3
+
+
 #include <config.h>
 
 #undef MTDPARTS_DEFAULT
@@ -48,8 +136,7 @@
 
 #define VAR_UBOOT_ADDR	0x9f000000
 #define VAR_UBOOT_SIZE	0x00050000
-#define VAR_UBOOT_NAME	"openwrt-ar71xx-ap152-dual-qca-legacy-uboot.bin"
-#define CONFIG_LOADADDR 0x80060000
+#define VAR_UBOOT_NAME	"uboot-gl-ar150.bin"
 
 /*****************gl environment end************/
 
@@ -289,9 +376,9 @@
 
 #ifdef CONFIG_ATH_NAND_SUPPORT
 #ifdef ATH_SPI_NAND
-#	define CONFIG_BOOTCOMMAND       "nboot 0x81000000 0 0"
+#	define CONFIG_BOOTCOMMAND       "if nand bad; then nboot 0x81000000 0 || run blf; else run blf; fi"
 #else
-#	define CONFIG_BOOTCOMMAND	"nboot 0x81000000 0 0x80000"
+#	define CONFIG_BOOTCOMMAND	"boot 0x9f050000"
 #endif 
 #else
 #	define CFG_ENV_ADDR		0x9f040000

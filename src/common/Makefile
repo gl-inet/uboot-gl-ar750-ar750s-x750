@@ -81,6 +81,8 @@ endif
 #add led command
 COBJS	+= cmd_led.o
 
+OBJS   += cmd_net.o
+
 ifeq ($(VXWORKS_UBOOT),1)
 COBJS	+=  cmd_elf.o
 endif

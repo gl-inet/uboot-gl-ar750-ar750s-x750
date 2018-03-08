@@ -152,6 +152,7 @@ LIBS += drivers/libdrivers.a
 
 LIBS += net/libnet.a
 LIBS += rtc/librtc.a
+LIBS += httpd/libhttpd.a
 #LIBS += post/libpost.a post/cpu/libcpu.a
 LIBS += $(BOARDLIBS)
 

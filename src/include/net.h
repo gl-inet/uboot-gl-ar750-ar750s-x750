@@ -345,6 +345,13 @@ typedef enum { BOOTP, RARP, ARP, TFTP, DHCP, PING, DNS, NFS, CDP, NETCONS, SNTP,
 typedef enum { BOOTP, RARP, ARP, TFTP, DHCP, PING, DNS, NFS, CDP, NETCONS, SNTP } proto_t;
 #endif
 
+static inline void eth_set_last_protocol(int protocol){
+#ifdef CONFIG_NETCONSOLE
+	extern proto_t net_loop_last_protocol;
+	net_loop_last_protocol = protocol;
+#endif
+}
+
 /* from net/net.c */
 extern char	BootFile[128];			/* Boot File name		*/
 

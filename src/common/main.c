@@ -36,6 +36,10 @@
 
 #include <post.h>
 
+/* for isdigit() */
+#include <linux/ctype.h>
+#include <asm-mips/string.h>
+
 #ifdef CONFIG_SILENT_CONSOLE
 DECLARE_GLOBAL_DATA_PTR;
 #endif
@@ -291,6 +295,42 @@ static __inline__ int abortboot(int bootdelay)
 #endif	/* CONFIG_BOOTDELAY >= 0  */
 
 /****************************************************************************/
+
+static ulong my_atoi(const char *c)
+{
+        ulong value = 0;
+        int sign = 1; 
+        if( *c == '+' || *c == '-' )
+        {
+                if( *c == '-' ) sign = -1;
+                c++;
+        }
+        while (isdigit(*c))
+        {
+                value *= 10;
+                value += (int) (*c-'0');
+                c++;
+        }
+        return (value * sign);
+}
+
+extern char *getenv (char *name);
+extern void setenv (char *varname, char *varvalue);
+extern int saveenv(void);
+
+unsigned long bootcount_load(void)
+{
+        return my_atoi(getenv("bootcount"));
+}
+
+void bootcount_store(ulong count)
+{
+        char buf[10];
+        sprintf(buf, "%ld", count);
+        setenv("bootcount", buf);
+        saveenv();
+}
+
 
 void main_loop (void)
 {
