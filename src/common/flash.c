@@ -170,7 +170,6 @@ flash_write (char *src, ulong addr, ulong cnt)
 	/* finally write data to flash */
 	for (info = info_first; info <= info_last && cnt>0; ++info) {
 		ulong len;
-
 		len = info->start[0] + info->size - addr;
 		if (len > cnt)
 			len = cnt;
@@ -180,6 +179,7 @@ flash_write (char *src, ulong addr, ulong cnt)
 		cnt  -= len;
 		addr += len;
 		src  += len;
+		
 	}
 	return (ERR_OK);
 #endif /* CONFIG_SPD823TS */

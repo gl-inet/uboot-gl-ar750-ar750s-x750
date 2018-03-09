@@ -177,7 +177,6 @@ TftpHandler (uchar * pkt, unsigned dest, unsigned src, unsigned len)
 {
 	ushort proto;
 	ushort *s;
-
 	if (dest != TftpOurPort) {
 		return;
 	}
@@ -232,6 +231,11 @@ TftpHandler (uchar * pkt, unsigned dest, unsigned src, unsigned len)
 			} else if ((TftpBlock % (10 * HASHES_PER_LINE)) == 0) {
 				puts ("\n\t ");
 			}
+			/*GL--the middle of the LED flashing When using TFTP download files*/
+			if (((TftpBlock - 1) % 500) == 0)
+			{
+				green_led_toggle();//GL -- led flashing
+			}
 		}
 
 #ifdef ET_DEBUG
@@ -282,6 +286,7 @@ TftpHandler (uchar * pkt, unsigned dest, unsigned src, unsigned len)
 			 *	run it.
 			 */
 			puts ("\ndone\n");
+			green_led_off(); //GL--led off
 			NetState = NETLOOP_SUCCESS;
 		}
 		break;
@@ -290,6 +295,7 @@ TftpHandler (uchar * pkt, unsigned dest, unsigned src, unsigned len)
 		printf ("\nTFTP error: '%s' (%d)\n",
 					pkt + 2, ntohs(*(ushort *)pkt));
 		puts ("Starting again\n\n");
+		green_led_off(); //GL--led off
 		NetStartAgain ();
 		break;
 	}

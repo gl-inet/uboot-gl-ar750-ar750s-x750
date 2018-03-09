@@ -271,12 +271,14 @@ flash_erase(flash_info_t *info, int s_first, int s_last)
 			addr = ATH_GET_EXT_3BS(addr);
 
 		printf("\b\b\b\b%4d", i);
+		red_led_toggle();//gl -- led flashing
 		ath_spi_sector_erase(addr);
 	}
 
 	ath_spi_exit_ext_addr(ext);
 
 	ath_spi_done();
+	red_led_off();//gl -- led off
 	printf("\n");
 
 	return 0;
@@ -337,6 +339,7 @@ write_buff(flash_info_t *info, uchar *source, ulong addr, ulong len)
 	ulong dst;
 	uchar *src;
 	int ext = 0;
+	int write_count = 0;
 
 	printf("write addr: %x\n", addr);
 	addr = addr - CFG_FLASH_BASE;
@@ -360,11 +363,22 @@ write_buff(flash_info_t *info, uchar *source, ulong addr, ulong len)
 			bytes_this_page) ? bytes_this_page : (len - total);
 		ath_spi_write_page(dst, src, len_this_lp);
 		total += len_this_lp;
+		if(write_count == 150){
+			/*GL -- led flashing*/
+			green_led_toggle();
+                	red_led_toggle();
+			write_count = 0;
+		}
+		else
+			write_count++;
 	}
 
 	ath_spi_exit_ext_addr(ext);
 
 	ath_spi_done();
+
+	red_led_off(); //GL -- led off
+        green_led_off();
 
 	return 0;
 }

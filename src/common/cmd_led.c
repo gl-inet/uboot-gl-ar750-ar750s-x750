@@ -21,7 +21,7 @@ static int set_pin(int pin)
 
 static int clear_pin(int pin)
 {
-        unsigned int led_GPIO_OE  = ath_reg_rd(LED_GPIO_OE);
+	unsigned int led_GPIO_OE  = ath_reg_rd(LED_GPIO_OE);
         led_GPIO_OE  &= ~(1<<pin);      
         ath_reg_wr(LED_GPIO_OE,led_GPIO_OE);
         ath_reg_wr_nf(LED_GPIO_CLEAR,(unsigned int)(1<<pin));

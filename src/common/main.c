@@ -331,6 +331,7 @@ void bootcount_store(ulong count)
         saveenv();
 }
 
+extern int reset_button_status(void);
 
 void main_loop (void)
 {
@@ -340,6 +341,9 @@ void main_loop (void)
 	int rc = 1;
 	int flag;
 #endif
+
+
+	int counter = 0;
 
 #if defined(CONFIG_BOOTDELAY) && (CONFIG_BOOTDELAY >= 0)
 	char *s;
@@ -427,6 +431,57 @@ void main_loop (void)
 	bootdelay = s ? (int)simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
 
 //	debug ("### main_loop entered: bootdelay=%d\n\n", bootdelay);
+
+	if(reset_button_status()){
+                // wait 0,5s
+                udelay(500000);
+
+                printf("Press reset button for at least:\n- %d sec. to run web failsafe mode\n",
+                       CONFIG_DELAY_TO_AUTORUN_HTTPD);
+                printf("Reset button is pressed for: %2d ", counter);
+
+                while(reset_button_status() && counter < CONFIG_DELAY_TO_AUTORUN_HTTPD){
+                        // LED ON and wait 0,15s
+                        red_led_on();
+                        udelay(150000);
+
+                        // LED OFF and wait 0,85s
+                        red_led_off();
+                        udelay(850000);
+
+                        counter++;
+
+                        // how long the button is pressed?
+                        printf("\b\b\b%2d ", counter);
+
+                        //turn on Red LED to show httpd started
+                        if(counter==CONFIG_DELAY_TO_AUTORUN_HTTPD){
+                                green_led_on();
+                        }
+
+                        if(!reset_button_status()){
+                                break;
+                        }
+                }
+
+                //all_led_off();
+
+                if(counter > 0){
+
+                        // run web failsafe mode
+                        if(counter >= CONFIG_DELAY_TO_AUTORUN_HTTPD){
+                                printf("\n\nButton was pressed for %d sec...\nHTTP server is starting for firmware update...\n\n", counter); 
+                                NetLoopHttpd();
+                                bootdelay = -1;
+                        } else {
+                                printf("\n\n## Error: button wasn't pressed long enough!\nContinuing normal boot...\n\n");
+                        }
+
+                } else {
+                        printf("\n\n## Error: button wasn't pressed long enough!\nContinuing normal boot...\n\n");
+                }
+
+        }
 
 # ifdef CONFIG_BOOT_RETRY_TIME
 	init_cmd_timeout ();
