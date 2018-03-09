@@ -56,12 +56,12 @@ int do_http_upgrade(const ulong size, const int upgrade_type){
 		sprintf(buf,
 				"erase 0x%lX +0x%lX; cp.b 0x%lX 0x%lX 0x%lX",
 				WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS,
-				WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES,
+				WEBFAILSAFE_ERASE_UBOOT_SIZE_IN_BYTES,
 				WEBFAILSAFE_UPLOAD_RAM_ADDRESS,
 				WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS,
 				WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES);
 
-#if !defined(CONFIG_FOR_GL_AR300M)
+#if !defined(CONFIG_FOR_GL_9563)
 	} else if(upgrade_type == WEBFAILSAFE_UPGRADE_TYPE_FIRMWARE){
 
 		printf("\n\n****************************\n*    FIRMWARE UPGRADING    *\n* DO NOT POWER OFF DEVICE! *\n****************************\n\n");

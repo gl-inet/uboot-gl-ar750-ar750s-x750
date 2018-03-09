@@ -33,7 +33,7 @@
 
 // U-Boot partition size and offset
 #define WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS                                CFG_FLASH_BASE
-
+#define CONFIG_FOR_GL_9563
 #if defined(CONFIG_FOR_DLINK_DIR505_A1)
         #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (64 * 1024)
         #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x10000"
@@ -46,20 +46,26 @@
 #elif defined(CONFIG_FOR_DRAGINO_V2)
         #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (192 * 1024)
         #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x30000"
+#elif defined(CONFIG_FOR_GL_9563)
+	#define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (256 * 1024)
+        #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x40000"
 #else
         #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (256 * 1024)
         #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x40000"
 #endif
-#define CONFIG_FOR_GL_AR300M
+
+#define WEBFAILSAFE_ERASE_UBOOT_SIZE_IN_BYTES                          (320 * 1024)
 // Firmware partition offset
 #if defined(CONFIG_FOR_DLINK_DIR505_A1)
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x80000
 #elif defined(CONFIG_FOR_8DEVICES_CARAMBOLA2)
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x50000
-#elif defined(CONFIG_FOR_DOMINO) || defined(CONFIG_FOR_GL_AR300M)
+#elif defined(CONFIG_FOR_DOMINO)
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x50000
 #elif defined(CONFIG_FOR_DRAGINO_V2)
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x40000
+#elif defined(CONFIG_FOR_GL_9563)					
+	#define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS			WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x60000
 #else
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x20000
 #endif
@@ -68,7 +74,9 @@
 #if defined(CONFIG_FOR_DLINK_DIR505_A1)
         #define WEBFAILSAFE_UPLOAD_ART_ADDRESS                          WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x10000
 #endif
-
+#if defined(CONFIG_FOR_GL_9563)
+        #define WEBFAILSAFE_UPLOAD_ART_ADDRESS                          WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x50000
+#endif
 #define WEBFAILSAFE_UPLOAD_ART_SIZE_IN_BYTES                    (64 * 1024)
 
 // max. firmware size <= (FLASH_SIZE -  WEBFAILSAFE_UPLOAD_LIMITED_AREA_IN_BYTES)
@@ -311,7 +319,14 @@
 		 */
 #		define MTDPARTS_DEFAULT	"mtdparts=ath-nor0:32k(u-boot1),32k(u-boot2),3008k(rootfs),896k(uImage),64k(mib0),64k(ART)"
 #	else
-#if (FLASH_SIZE == 16) /*FLASH SIZE */
+#ifdef CONFIG_FOR_GL_9563
+#       define ATH_F_FILE               fs_name(${bc}-jffs2)
+#       define ATH_F_LEN                0xE30000
+#       define ATH_F_ADDR               0x9f050000
+#       define ATH_K_FILE               vmlinux${bc}.lzma.uImage
+#       define ATH_K_ADDR               0x9f060000
+#       define MTDPARTS_DEFAULT         "mtdparts=ath-nor0:256k(u-boot),64k(u-boot-env),14528k(rootfs),1408k(uImage)," ATH_MTDPARTS_MIB0 ",64k(ART)"
+#elif (FLASH_SIZE == 16) /*FLASH SIZE */
 #	define ATH_F_FILE		fs_name(${bc}-jffs2)
 #	define ATH_F_LEN		0xE30000
 #	define ATH_F_ADDR		0x9f050000
@@ -382,7 +397,9 @@
 #endif 
 #else
 #	define CFG_ENV_ADDR		0x9f040000
-#if (FLASH_SIZE ==16) /*FLASH_SIZE */
+#ifdef CONFIG_FOR_GL_9563
+#	define CONFIG_BOOTCOMMAND       "bootm 0x9f060000"
+#elif (FLASH_SIZE ==16) /*FLASH_SIZE */
 #	define CONFIG_BOOTCOMMAND	"bootm 0x9fe80000"
 #elif (FLASH_SIZE == 8)
 #	define CONFIG_BOOTCOMMAND	"bootm 0x9f680000"
