@@ -43,10 +43,9 @@ int check_tftp_file()
 	char *argv[2];
 	argv[0] = "2";
 	argv[1] = "192.168.1.2";
-
 	if(do_ping(NULL,0,argc,argv))return 0;
 	tftp_file = 1;
-	run_command("tftp 80080000 openwrt-gl-ar150.bin",0);
+	run_command("tftp 80080000 openwrt-gl-ar750s.bin",0);
 	if(tftp_file){
 		setenv("tmp_env","erase 0x9f060000 +$filesize && cp.b $fileaddr 0x9f060000 $filesize");
 		run_command("run tmp_env",0);
@@ -54,14 +53,13 @@ int check_tftp_file()
 
 #if (CONFIG_COMMANDS & CFG_CMD_NAND)	
 	if(0==check_nand()) return 0;
-#endif
-
 	tftp_file = 1;
-	run_command("tftp 80080000 openwrt-gl-ar150-ubi.img",0);
+	run_command("tftp 80080000 openwrt-gl-ar750s-ubi.img",0);
 	if(tftp_file){
 		setenv("tmp_env"," nand erase && nand write $fileaddr 0 $filesize");
 		run_command("run tmp_env",0);
 	}
+#endif
 	return 0;
 }
 
@@ -89,7 +87,7 @@ int select_boot_dev(){
  * @return: 1: done 0: not done
  */
 int test_done(void){
-	volatile unsigned int *s=(volatile unsigned int *)0x9f060060;
+	volatile unsigned int *s=(volatile unsigned int *)0x9f050060;
 	if(*s==0x7365636f) //seco
 		return 1;
 	return 0;

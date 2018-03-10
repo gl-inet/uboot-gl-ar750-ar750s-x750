@@ -237,7 +237,7 @@ void board_init_f(ulong bootflag)
 	/* round down to next 4 kB limit.
 	 */
 	addr &= ~(4096 - 1);
-	debug ("Top of RAM usable for U-Boot at: %08lx\n", addr);
+	/* debug ("Top of RAM usable for U-Boot at: %08lx\n", addr); */
 
 	/* Reserve memory for U-Boot code, data & bss
 	 * round down to next 16 kB limit
@@ -245,13 +245,13 @@ void board_init_f(ulong bootflag)
 	addr -= len;
 	addr &= ~(16 * 1024 - 1);
 
-	debug ("Reserving %ldk for U-Boot at: %08lx\n", len >> 10, addr);
+	/* debug ("Reserving %ldk for U-Boot at: %08lx\n", len >> 10, addr); */
 
 	 /* Reserve memory for malloc() arena.
 	 */
 	addr_sp = addr - TOTAL_MALLOC_LEN;
-	debug ("Reserving %dk for malloc() at: %08lx\n",
-			TOTAL_MALLOC_LEN >> 10, addr_sp);
+	/* debug ("Reserving %dk for malloc() at: %08lx\n", */
+	/* 		TOTAL_MALLOC_LEN >> 10, addr_sp); */
 
 	/*
 	 * (permanently) allocate a Board Info struct
@@ -260,20 +260,20 @@ void board_init_f(ulong bootflag)
 	addr_sp -= sizeof(bd_t);
 	bd = (bd_t *)addr_sp;
 	gd->bd = bd;
-	debug ("Reserving %d Bytes for Board Info at: %08lx\n",
-			sizeof(bd_t), addr_sp);
+	/* debug ("Reserving %d Bytes for Board Info at: %08lx\n", */
+	/* 		sizeof(bd_t), addr_sp); */
 
 	addr_sp -= sizeof(gd_t);
 	id = (gd_t *)addr_sp;
-	debug ("Reserving %d Bytes for Global Data at: %08lx\n",
-			sizeof (gd_t), addr_sp);
+	/* debug ("Reserving %d Bytes for Global Data at: %08lx\n", */
+	/* 		sizeof (gd_t), addr_sp); */
 
  	/* Reserve memory for boot params.
 	 */
 	addr_sp -= CFG_BOOTPARAMS_LEN;
 	bd->bi_boot_params = addr_sp;
-	debug ("Reserving %dk for boot params() at: %08lx\n",
-			CFG_BOOTPARAMS_LEN >> 10, addr_sp);
+	/* debug ("Reserving %dk for boot params() at: %08lx\n", */
+	/* 		CFG_BOOTPARAMS_LEN >> 10, addr_sp); */
 
 	/*
 	 * Finally, we set up a new (bigger) stack.
@@ -287,7 +287,7 @@ void board_init_f(ulong bootflag)
 	*s-- = 0;
 	*s-- = 0;
 	addr_sp = (ulong)s;
-	debug ("Stack Pointer at: %08lx\n", addr_sp);
+	/* debug ("Stack Pointer at: %08lx\n", addr_sp); */
 
 	/*
 	 * Save local variables to board info struct
@@ -321,6 +321,7 @@ void board_init_f(ulong bootflag)
 
 void board_init_r (gd_t *id, ulong dest_addr)
 {
+	status_led_on();//GL -- led on
 	cmd_tbl_t *cmdtp;
 	ulong size;
 	extern void malloc_bin_reloc (void);
@@ -341,7 +342,7 @@ void board_init_r (gd_t *id, ulong dest_addr)
 	gd = id;
 	gd->flags |= GD_FLG_RELOC;	/* tell others: relocation done */
 
-	debug ("Now running in RAM - U-Boot at: %08lx\n", dest_addr);
+	/* debug ("Now running in RAM - U-Boot at: %08lx\n", dest_addr); */
 
 	gd->reloc_off = dest_addr - CFG_MONITOR_BASE;
 
@@ -383,7 +384,7 @@ void board_init_r (gd_t *id, ulong dest_addr)
 #ifndef CONFIG_ATH_NAND_BR
 	/* configure available FLASH banks */
 	size = flash_init();
-	display_flash_config (size);
+	/* display_flash_config (size); */
 #endif
 
 	bd = gd->bd;
@@ -451,7 +452,7 @@ void board_init_r (gd_t *id, ulong dest_addr)
 
 #if (CONFIG_COMMANDS & CFG_CMD_NET)
 #if defined(CONFIG_NET_MULTI)
-	puts ("Net:   ");
+	/* puts ("Net:   "); */
 #endif
 	eth_initialize(gd->bd);
 #endif

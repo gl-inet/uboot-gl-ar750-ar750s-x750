@@ -336,7 +336,6 @@ extern int reset_button_status(void);
 
 void main_loop (void)
 {
-	status_led_on();
 #ifndef CFG_HUSH_PARSER
 	static char lastcommand[CFG_CBSIZE] = { 0, };
 	int len;
@@ -372,7 +371,7 @@ void main_loop (void)
 	trab_vfd (bmp);
 #endif	/* CONFIG_VFD && VFD_TEST_LOGO */
 
-#ifdef CONFIG_BOOTCOUNT_LIMIT
+/*#ifdef CONFIG_BOOTCOUNT_LIMIT
 	bootcount = bootcount_load();
 	bootcount++;
 	bootcount_store (bootcount);
@@ -380,7 +379,7 @@ void main_loop (void)
 	setenv ("bootcount", bcs_set);
 	bcs = getenv ("bootlimit");
 	bootlimit = bcs ? simple_strtoul (bcs, NULL, 10) : 0;
-#endif /* CONFIG_BOOTCOUNT_LIMIT */
+#endif // CONFIG_BOOTCOUNT_LIMIT */
 
 #ifdef CONFIG_MODEM_SUPPORT
 	debug ("DEBUG: main_loop:   do_mdm_init=%d\n", do_mdm_init);
@@ -529,7 +528,6 @@ void main_loop (void)
                  * 1 : calibrated, and but need to write config
                  * 2 : calibrated, and config ready
                 */
-		printf("status == %d\n",status);
 		switch(status){
                         case 6:goto mainloop;break;
                         case 4:
