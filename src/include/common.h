@@ -41,6 +41,7 @@ typedef volatile unsigned char	vu_char;
 #if defined(CONFIG_PCI) && defined(CONFIG_440)
 #include <pci.h>
 #endif
+
 #if defined(CONFIG_8xx)
 #include <asm/8xx_immap.h>
 #if defined(CONFIG_MPC852)	|| defined(CONFIG_MPC852T)	|| \

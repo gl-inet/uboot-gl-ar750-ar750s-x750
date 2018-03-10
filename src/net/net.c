@@ -2045,7 +2045,9 @@ int NetLoopHttpd(void){
 
 			/* Invalidate the last protocol */
 			eth_set_last_protocol(BOOTP);
-
+			
+			green_led_off();//GL -- led off
+			
 			printf("\nWeb failsafe mode aborted!\n\n");
 			return(-1);
 		}

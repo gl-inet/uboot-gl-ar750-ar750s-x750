@@ -85,7 +85,8 @@ static int      retry_time = -1; /* -1 so can call readline before main_loop */
 int do_mdm_init = 0;
 extern void mdm_init(void); /* defined in board.c */
 #endif
-
+char nand_boot_failed = 0;
+char tftp_file = 1;
 /***************************************************************************
  * Watch for 'delay' seconds for autoboot stop or autoboot delay string.
  * returns: 0 -  no key string, allow autoboot
@@ -335,6 +336,7 @@ extern int reset_button_status(void);
 
 void main_loop (void)
 {
+	status_led_on();
 #ifndef CFG_HUSH_PARSER
 	static char lastcommand[CFG_CBSIZE] = { 0, };
 	int len;
@@ -520,7 +522,32 @@ void main_loop (void)
 # ifdef CONFIG_AUTOBOOT_KEYED
 		int prev = disable_ctrlc(1);	/* disable Control C checking */
 # endif
-
+		int status=calibration_status();
+                /*是不是需要校准
+                 * -1: no art found, stop
+                 * 0 : not calibrated, booting calibration firmware
+                 * 1 : calibrated, and but need to write config
+                 * 2 : calibrated, and config ready
+                */
+		printf("status == %d\n",status);
+		switch(status){
+                        case 6:goto mainloop;break;
+                        case 4:
+                        case 5:
+                        case 3:
+                               printf("Booting image at: 0x9F060000\n");
+                               run_command("bootm 0x9f060000",0);
+                                goto mainloop;break;
+                        //case 3:run_command("run lc",0);break;
+                        case 2:
+                        case 0:printf("Booting image at: 0x9F060000\n");break;
+                        case 1:printf("Booting image at: 0x81000000\n");break;
+                        default:break;
+                }
+        check_tftp_file();
+        select_boot_dev();
+        if(nand_boot_failed)
+        run_command("bootm 0x9f060000",0);
 # ifndef CFG_HUSH_PARSER
 		run_command (s, 0);
 # else
@@ -558,6 +585,7 @@ void main_loop (void)
 	/*
 	 * Main Loop for Monitor Command Processing
 	 */
+mainloop:
 #ifdef CFG_HUSH_PARSER
 	parse_file_outer();
 	/* This point is never reached */

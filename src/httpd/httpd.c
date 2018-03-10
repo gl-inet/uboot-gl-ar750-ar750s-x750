@@ -77,9 +77,9 @@ static void httpd_download_progress(void){
 		post_line_counter++;
 		green_led_off();
 	}
-	if(post_line_counter == 80)
+	if(post_line_counter == 20)
 	green_led_on();
-	if(post_line_counter == 160){
+	if(post_line_counter == 40){
 		/* wan_led_toggle(); */
 	green_led_off();
 		post_line_counter=0;

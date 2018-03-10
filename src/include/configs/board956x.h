@@ -466,6 +466,7 @@
 #	endif
 #endif /* #ifndef COMPRESSED_UBOOT */
 
+
 #ifdef CONFIG_ATH_NAND_SUPPORT
 #	ifdef CONFIG_ATH_NAND_BR
 #		define CFG_ENV_IS_IN_NAND	1

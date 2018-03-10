@@ -78,6 +78,9 @@ ifndef BOOT_FROM_NAND
 COBJS	+= flash.o
 endif
 
+OBJS    += device_check.o
+COBJS	+= device_check.o
+
 #add led command
 COBJS	+= cmd_led.o
 
