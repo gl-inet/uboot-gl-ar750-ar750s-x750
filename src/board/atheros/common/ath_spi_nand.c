@@ -358,7 +358,7 @@ __ath_spi_nand_status(ath_spi_nand_sc_t *sc, const char *f)
 	 *
 	 * Set 'max' to maximum of the above
 	 */
-	const int max = 300;
+	const int max = 800;
 
 	ath_spi_nand_start();
 	ath_spi_nand_bit_banger(ATH_SPI_NAND_CMD_GET_FEATURE);
