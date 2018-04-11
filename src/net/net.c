@@ -606,7 +606,10 @@ skip_netloop:
 
 				sprintf(buf, "%lx", NetBootFileXferSize);
 				setenv("filesize", buf);
-
+				if(NetBootFileXferSize >= 0x200000){
+					sprintf(buf, "%lx", NetBootFileXferSize-0x200000);
+					setenv("rootfs_size", buf);
+				}
 				sprintf(buf, "%lX", (unsigned long)load_addr);
 				setenv("fileaddr", buf);
 			}
@@ -2055,11 +2058,8 @@ int NetLoopHttpd(void){
 		// until upload is not completed, get back to the start of the loop
 		if(!webfailsafe_ready_for_upgrade){
 			load_count++;
-			if(load_count == 30){
-				green_led_on();
-			}
-			else if(load_count == 60){
-				green_led_off();
+			if(load_count == 50){
+				green_led_toggle();
 				load_count=0;
 			}
 			continue;
@@ -2072,9 +2072,32 @@ int NetLoopHttpd(void){
 		do_http_progress(WEBFAILSAFE_PROGRESS_UPLOAD_READY);
 		green_led_off();
 		// try to make upgrade!
-		if(do_http_upgrade(NetBootFileXferSize, webfailsafe_upgrade_type) >= 0){
-			udelay(500000);
+		if(webfailsafe_upgrade_type == WEBFAILSAFE_UPGRADE_TYPE_FIRMWARE){
+			char nand_cmd_buf[96];
+			printf("\n\n****************************\n*    FIRMWARE UPGRADING    *\n* DO NOT POWER OFF DEVICE! *\n****************************\n\n");
+                sprintf(nand_cmd_buf,
+				"erase 0x%lX +0x%lX;nand erase; cp.b 0x%lX 0x%lX 0x%lX; nand write 0x%lX 0 0x%lX",
+                                WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS,
+                                WEBFAILSAFE_UPLOAD_NAND_KERNEL_SIZE,
+				//NetBootFileXferSize-WEBFAILSAFE_UPLOAD_NAND_KERNEL_SIZE,
+                                WEBFAILSAFE_UPLOAD_RAM_ADDRESS,
+                                WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS,
+                                WEBFAILSAFE_UPLOAD_NAND_KERNEL_SIZE,
+                                WEBFAILSAFE_UPLOAD_RAM_ADDRESS+WEBFAILSAFE_UPLOAD_NAND_KERNEL_SIZE,
+                                NetBootFileXferSize-WEBFAILSAFE_UPLOAD_NAND_KERNEL_SIZE);
+				printf("Executing: %s\n\n", nand_cmd_buf);
+				if(run_command(nand_cmd_buf, 0) >= 0){
+					udelay(500000);
+                        		do_http_progress(WEBFAILSAFE_PROGRESS_UPGRADE_READY);
 
+                        		udelay(500000);
+
+                        		/* reset the board */
+                        		do_reset(NULL, 0, 0, NULL);	
+				}
+		}
+		else if(do_http_upgrade(NetBootFileXferSize, webfailsafe_upgrade_type) >= 0){	
+			udelay(500000);
 			do_http_progress(WEBFAILSAFE_PROGRESS_UPGRADE_READY);
 
 			udelay(500000);

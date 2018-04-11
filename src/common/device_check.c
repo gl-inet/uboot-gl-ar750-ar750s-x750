@@ -45,9 +45,9 @@ int check_tftp_file()
 	argv[1] = "192.168.1.2";
 	if(do_ping(NULL,0,argc,argv))return 0;
 	tftp_file = 1;
-	run_command("tftp 80080000 openwrt-gl-ar750s.bin",0);
+	run_command("tftp 80800000 openwrt-gl-ar750s.img",0);
 	if(tftp_file){
-		setenv("tmp_env","erase 0x9f060000 +$filesize && cp.b $fileaddr 0x9f060000 $filesize");
+		setenv("tmp_env","erase $firmware_addr +$kernelsize && nand erase && cp.b $fileaddr $firmware_addr $kernelsize && nand write $rootfs_addr 0 $filesize");
 		run_command("run tmp_env",0);
 	}
 
@@ -75,7 +75,8 @@ int select_boot_dev(){
 		//printf("val is %d\n",val);
 		switch(val)//from nand boot
 		{
-		case 2: run_command("nboot 0x81000000 0",0);break;
+		//case 2: run_command("nboot 0x81000000 0",0);break;
+		case 2: run_command("bootm 0x9f060000",0);break;//force boot to 0x9f060000
 		case 1: run_command("bootm 0x9f060000",0);break;
 		default: break;
 		}		

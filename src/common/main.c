@@ -85,7 +85,7 @@ static int      retry_time = -1; /* -1 so can call readline before main_loop */
 int do_mdm_init = 0;
 extern void mdm_init(void); /* defined in board.c */
 #endif
-char nand_boot_failed = 0;
+char nand_boot_failed = 1;
 char tftp_file = 1;
 /***************************************************************************
  * Watch for 'delay' seconds for autoboot stop or autoboot delay string.
@@ -1030,7 +1030,6 @@ int run_command (const char *cmd, int flag)
 			    (*(sep-1) != '\\'))	/* and NOT escaped	*/
 				break;
 		}
-
 		/*
 		 * Limit the token to data between separators
 		 */
