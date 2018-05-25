@@ -11,13 +11,19 @@ readme:
 选择一个编译好的openwrt树，将代码clone到package目录下，执行make menuconfig进行配置。
 LEDE代码树不行，编译的时候报错，没有细看
 ```
-编译配置
+编译配置(ar750s)
 --
 ```
 Target System (Atheros AR7xxx/AR9xxx)  --->
 Boot Loaders  --->
 	<*> qca-legacy-uboot-ap152-16M.......................... U-boot for ap152-16M
 ```
+编译配置(ar750)
+--
+```
+Target System (Atheros AR7xxx/AR9xxx)  --->
+Boot Loaders  --->
+	<*> qca-legacy-uboot-cus531-nand...................... U-boot for cus531-nand
 编译
 --
 ```
