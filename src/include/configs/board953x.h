@@ -72,6 +72,7 @@
 #endif
 #if defined(CONFIG_FOR_GL_BOARD)
         #define WEBFAILSAFE_UPLOAD_ART_ADDRESS                          WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x50000
+	#define WEBFAILSAFE_UPLOAD_NAND_KERNEL_SIZE			0x200000
 #endif
 #define WEBFAILSAFE_UPLOAD_ART_SIZE_IN_BYTES                    (64 * 1024)
 
