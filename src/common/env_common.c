@@ -69,15 +69,26 @@ uchar default_environment[] = {
 /*
  *define gl environment
 */
-
 #ifdef COMMAND_LF
-	"lf="	COMMAND_LF 		"\0"
+	"lf="	COMMAND_LF		"\0"
+#endif
+#ifdef COMMAND_RLF
+	"rlf="	COMMAND_RLF 		"\0"
+#endif
+#ifdef VAR_KERNEL_SIZE
+	"kernelsize="	MK_STR(VAR_KERNEL_SIZE)		"\0"
+#endif
+#ifdef VAR_ROOTFS_ADDR
+	"rootfs_addr="	MK_STR(VAR_ROOTFS_ADDR)		"\0"
 #endif
 #ifdef VAR_FIRMWARE_ADDR
 	"firmware_addr="	MK_STR(VAR_FIRMWARE_ADDR) 		"\0"
 #endif
-#ifdef VAR_FIRMWARE_NAME
-	"firmware_name="	VAR_FIRMWARE_NAME 		"\0"
+#ifdef VAR_FIRMWARE_NOR_NAME
+	"firmware_nor_name="	VAR_FIRMWARE_NOR_NAME 		"\0"
+#endif
+#ifdef VAR_FIRMWARE_NAND_NAME
+	"firmware_nand_name="	VAR_FIRMWARE_NAND_NAME 		"\0"
 #endif
 #ifdef COMMAND_LU
 	"lu="	COMMAND_LU 		"\0"

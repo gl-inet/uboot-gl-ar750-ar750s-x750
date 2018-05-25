@@ -85,7 +85,7 @@ static int      retry_time = -1; /* -1 so can call readline before main_loop */
 int do_mdm_init = 0;
 extern void mdm_init(void); /* defined in board.c */
 #endif
-char nand_boot_failed = 0;
+char nand_boot_failed = 1;
 char tftp_file = 1;
 /***************************************************************************
  * Watch for 'delay' seconds for autoboot stop or autoboot delay string.
@@ -238,7 +238,7 @@ static __inline__ int abortboot(int bootdelay)
 #ifdef CONFIG_MENUPROMPT
 	printf(CONFIG_MENUPROMPT, bootdelay);
 #else
-	printf("Hit any key to stop autoboot: %2d ", bootdelay);
+	printf("Hit 'gl' to stop autoboot: %2d ", bootdelay);
 #endif
 
 #if defined CONFIG_ZERO_BOOTDELAY_CHECK
@@ -254,7 +254,7 @@ static __inline__ int abortboot(int bootdelay)
 		}
 	}
 #endif
-
+	char tmp_flag=0,tmp_key=0;
 	while ((bootdelay > 0) && (!abort)) {
 		int i;
 
@@ -262,12 +262,23 @@ static __inline__ int abortboot(int bootdelay)
 		/* delay 100 * 10ms */
 		for (i=0; !abort && i<100; ++i) {
 			if (tstc()) {	/* we got a key press	*/
-				abort  = 1;	/* don't auto boot	*/
-				bootdelay = 0;	/* no more delay	*/
+				//abort  = 1;	/* don't auto boot	*/
+				//bootdelay = 0;	/* no more delay	*/
 # ifdef CONFIG_MENUKEY
 				menukey = getc();
 # else
-				(void) getc();  /* consume input	*/
+				//(void) getc();  /* consume input	*/
+                                tmp_key = getc();
+                                if(tmp_key == 'g'){
+                                        tmp_flag = 1;
+                                        break;
+                                }
+                                if((tmp_flag == 1)&&(tmp_key == 'l'))
+                                {
+                                        abort  = 1;     /* don't auto boot      */
+                                        bootdelay = 1;  /* no more delay        */
+                                        break;
+                                }
 # endif
 				break;
 			}
@@ -1030,7 +1041,6 @@ int run_command (const char *cmd, int flag)
 			    (*(sep-1) != '\\'))	/* and NOT escaped	*/
 				break;
 		}
-
 		/*
 		 * Limit the token to data between separators
 		 */

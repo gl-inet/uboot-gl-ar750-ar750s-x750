@@ -34,6 +34,13 @@
 // U-Boot partition size and offset
 #define WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS                                CFG_FLASH_BASE
 #define CONFIG_FOR_GL_BOARD
+
+//GL support nand command
+#if defined(CONFIG_FOR_GL_BOARD)
+	#define CFG_CMD_NAND 1
+#endif
+
+
 #if defined(CONFIG_FOR_DLINK_DIR505_A1)
         #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (64 * 1024)
         #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x10000"
@@ -66,6 +73,7 @@
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x40000
 #elif defined(CONFIG_FOR_GL_BOARD)					
 	#define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS			WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x60000
+	#define WEBFAILSAFE_UPLOAD_NAND_KERNEL_SIZE			0x200000
 #else
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x20000
 #endif
@@ -135,16 +143,21 @@
  *define gl environment
 */
 
-#define COMMAND_LF "if ping $serverip; then tftp $loadaddr $firmware_name && erase $firmware_addr +$filesize && cp.b $fileaddr $firmware_addr $filesize && echo OK!; else ERROR! Server not reachable!; fi" 
+#define COMMAND_LF "if ping $serverip; then tftp $loadaddr $firmware_nand_name && erase $firmware_addr +$kernelsize && nand erase && cp.b $fileaddr $firmware_addr $kernelsize && nand write $rootfs_addr 0 $rootfs_size && echo OK!; else ERROR! Server not reachable!; fi"
+
+#define COMMAND_RLF "if ping $serverip; then tftp $loadaddr $firmware_nor_name && erase $firmware_addr +$filesize && cp.b $fileaddr $firmware_addr $filesize && echo OK!; else ERROR! Server not reachable!; fi" 
 
 #define VAR_FIRMWARE_ADDR 0x9f060000
-#define VAR_FIRMWARE_NAME "openwrt-gl-ar750s.bin"
+#define VAR_FIRMWARE_NOR_NAME  "openwrt-gl-ar750s.bin"
+#define VAR_FIRMWARE_NAND_NAME "openwrt-gl-ar750s.img"
 
 #define COMMAND_LU "if ping $serverip; then tftp $loadaddr $uboot_name && erase $uboot_addr +$uboot_size && cp.b $fileaddr $uboot_addr $filesize && echo OK!; else ERROR! Server not reachable!; fi"
 
 #define VAR_UBOOT_ADDR	0x9f000000
 #define VAR_UBOOT_SIZE	0x00050000
 #define VAR_UBOOT_NAME	"uboot-gl-ar750s.bin"
+#define VAR_KERNEL_SIZE 0x00200000
+#define VAR_ROOTFS_ADDR 0x80a00000
 
 /*****************gl environment end************/
 

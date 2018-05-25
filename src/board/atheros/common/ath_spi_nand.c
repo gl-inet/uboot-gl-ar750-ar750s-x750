@@ -719,8 +719,13 @@ ath_spi_nand_rw_buff(struct mtd_info *mtd, int rd, uint8_t *buf,
 		ptr += l;
 		addr += l;
 		num--;
+		if(num % 50 == 0){
+			red_led_toggle();
+			green_led_toggle();
+		}
 	}
-
+	red_led_off();
+	green_led_off();
 	return euclean ? -EUCLEAN : 0;
 }
 
@@ -829,6 +834,8 @@ ath_spi_nand_erase(struct mtd_info *mtd, struct erase_info *instr)
 				mtd->erasesize, i, ba1, ba0);
 			break;
 		}
+		if(j % 100 == 0)
+			red_led_toggle();
 	}
 	ath_spi_fs(0);	// Disable access to SPI controller
 
@@ -840,7 +847,7 @@ ath_spi_nand_erase(struct mtd_info *mtd, struct erase_info *instr)
 		}
 		mtd_erase_callback(instr);
 	}
-
+	red_led_off();
 	return ret;
 }
 
