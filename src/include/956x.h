@@ -3569,6 +3569,8 @@
 #define ATH_SPI_CS_DIS      0x70000
 #define ATH_SPI_CE_LOW      0x60000
 #define ATH_SPI_CE_HIGH     0x60100
+#define ATH_SPI_CD_LOW      0x70000
+#define ATH_SPI_CD_HIGH     0x70100
 
 #define ATH_SPI_SECTOR_SIZE (1024*64)
 #define ATH_SPI_PAGE_SIZE   256
@@ -3591,6 +3593,15 @@
 #define ATH_SPI_CMD_SECTOR_ERASE    0xd8
 #define ATH_SPI_CMD_CHIP_ERASE      0xc7
 #define ATH_SPI_CMD_RDID        0x9f
+/* commands for 32MB and above */
+#define ATH_SPI_CMD_WREAR       0xC5
+#define ATH_SPI_CMD_RDEAR       0xC8
+#define ATH_SPI_CMD_READ        0x03
+#define ATH_SPI_CMD_EN4B        0xB7
+#define ATH_SPI_CMD_EX4B        0xE9
+#define ATH_SPI_CMD_WRDIS       0x04
+#define ATH_SPI_CMD_RD_STATUS_2 0x35
+#define ATH_SPI_CMD_RD_STATUS_3 0x15
 
 #if defined(CFG_ATH_EMULATION)
 

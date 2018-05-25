@@ -3819,6 +3819,15 @@
 #define ATH_SPI_CMD_RDID		0x9f
 #define ATH_SPI_CMD_WR_EXT		0xc5
 #define ATH_SPI_CMD_RD_EXT		0xc8
+/* commands for 32MB and above */
+#define ATH_SPI_CMD_WREAR       0xC5
+#define ATH_SPI_CMD_RDEAR       0xC8
+#define ATH_SPI_CMD_READ        0x03
+#define ATH_SPI_CMD_EN4B        0xB7
+#define ATH_SPI_CMD_EX4B        0xE9
+#define ATH_SPI_CMD_WRDIS       0x04
+#define ATH_SPI_CMD_RD_STATUS_2 0x35
+#define ATH_SPI_CMD_RD_STATUS_3 0x15
 
 #if defined(CFG_ATH_EMULATION)
 

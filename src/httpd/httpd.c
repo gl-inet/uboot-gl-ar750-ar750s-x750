@@ -28,7 +28,9 @@
 
 // debug
 //#define DEBUG_UIP
-
+extern void green_led_on(void);
+extern void green_led_off(void);
+extern void red_led_off(void);
 // html files
 extern const struct fsdata_file file_index_html;
 extern const struct fsdata_file file_404_html;

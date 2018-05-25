@@ -33,7 +33,7 @@
 
 // U-Boot partition size and offset
 #define WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS                                CFG_FLASH_BASE
-#define CONFIG_FOR_GL_9563
+#define CONFIG_FOR_GL_BOARD
 #if defined(CONFIG_FOR_DLINK_DIR505_A1)
         #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (64 * 1024)
         #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x10000"
@@ -46,7 +46,7 @@
 #elif defined(CONFIG_FOR_DRAGINO_V2)
         #define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (192 * 1024)
         #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x30000"
-#elif defined(CONFIG_FOR_GL_9563)
+#elif defined(CONFIG_FOR_GL_BOARD)
 	#define WEBFAILSAFE_UPLOAD_UBOOT_SIZE_IN_BYTES          (256 * 1024)
         #define UPDATE_SCRIPT_UBOOT_SIZE_IN_BYTES                       "0x40000"
 #else
@@ -64,7 +64,7 @@
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x50000
 #elif defined(CONFIG_FOR_DRAGINO_V2)
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x40000
-#elif defined(CONFIG_FOR_GL_9563)					
+#elif defined(CONFIG_FOR_GL_BOARD)					
 	#define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS			WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x60000
 #else
         #define WEBFAILSAFE_UPLOAD_KERNEL_ADDRESS                       WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x20000
@@ -74,7 +74,7 @@
 #if defined(CONFIG_FOR_DLINK_DIR505_A1)
         #define WEBFAILSAFE_UPLOAD_ART_ADDRESS                          WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x10000
 #endif
-#if defined(CONFIG_FOR_GL_9563)
+#if defined(CONFIG_FOR_GL_BOARD)
         #define WEBFAILSAFE_UPLOAD_ART_ADDRESS                          WEBFAILSAFE_UPLOAD_UBOOT_ADDRESS + 0x50000
 #endif
 #define WEBFAILSAFE_UPLOAD_ART_SIZE_IN_BYTES                    (64 * 1024)
@@ -149,7 +149,9 @@
 /*****************gl environment end************/
 
 #define CFG_MAX_FLASH_BANKS	1	/* max number of memory banks */
-#if (FLASH_SIZE == 16)
+#if (FLASH_SIZE == 32)
+#define CFG_FLASH_SIZE		0x02000000	/* Total flash size */
+#elif (FLASH_SIZE == 16)
 #define CFG_MAX_FLASH_SECT	256	/* max number of sectors on one chip */
 #define ATH_MTDPARTS_MIB0	"64k(mib0)"
 #elif (FLASH_SIZE == 8)
@@ -319,7 +321,7 @@
 		 */
 #		define MTDPARTS_DEFAULT	"mtdparts=ath-nor0:32k(u-boot1),32k(u-boot2),3008k(rootfs),896k(uImage),64k(mib0),64k(ART)"
 #	else
-#ifdef CONFIG_FOR_GL_9563
+#ifdef CONFIG_FOR_GL_BOARD
 #       define ATH_F_FILE               fs_name(${bc}-jffs2)
 #       define ATH_F_LEN                0xE30000
 #       define ATH_F_ADDR               0x9f050000
@@ -397,7 +399,7 @@
 #endif 
 #else
 #	define CFG_ENV_ADDR		0x9f040000
-#ifdef CONFIG_FOR_GL_9563
+#ifdef CONFIG_FOR_GL_BOARD
 #	define CONFIG_BOOTCOMMAND       "bootm 0x9f060000"
 #elif (FLASH_SIZE ==16) /*FLASH_SIZE */
 #	define CONFIG_BOOTCOMMAND	"bootm 0x9fe80000"

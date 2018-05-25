@@ -21,6 +21,7 @@
 #include <config.h>
 #include <version.h>
 #include <atheros.h>
+#include "ar7240_soc.h"
 
 extern int ath_ddr_initial_config(uint32_t refresh);
 extern int ath_ddr_find_size(void);
@@ -148,4 +149,113 @@ int	checkboard(args)
 {
 	board_str(CONFIG_BOARD_NAME);
 	return 0;
+}
+
+int reset_button_status(void)
+{
+	unsigned int gpio;
+
+        gpio = ath_reg_rd(AR7240_GPIO_IN);
+
+#define GL_AR300M_GPIO_BTN_RESET 3
+	if (gpio & (1 << GL_AR300M_GPIO_BTN_RESET)) {
+		return(0);
+	} else {
+		return(1);
+	}
+}
+
+#define GPIO_LED_STATUS	(1 << 12)
+#define GPIO_LED_GREEN	(1 << 14)
+#define GPIO_LED_RED	(1 << 13)
+
+void status_led_on(void)
+{
+        ath_reg_wr_nf(AR7240_GPIO_CLEAR, GPIO_LED_STATUS);
+}
+
+void status_led_off(void)
+{
+        ath_reg_wr_nf(AR7240_GPIO_SET, GPIO_LED_STATUS);
+}
+
+void status_led_toggle(void)
+{
+        if (ath_reg_rd(AR7240_GPIO_OUT) & GPIO_LED_STATUS)
+                status_led_on();
+        else
+                status_led_off();
+}
+
+void green_led_on(void)
+{
+        ath_reg_wr_nf(AR7240_GPIO_CLEAR, GPIO_LED_GREEN);
+}
+
+void green_led_off(void)
+{
+        ath_reg_wr_nf(AR7240_GPIO_SET, GPIO_LED_GREEN);
+}
+
+void green_led_toggle(void)
+{
+        if (ath_reg_rd(AR7240_GPIO_OUT) & GPIO_LED_GREEN)
+                green_led_on();
+        else
+                green_led_off();
+}
+
+void red_led_on(void)
+{
+        ath_reg_wr_nf(AR7240_GPIO_CLEAR, GPIO_LED_RED);
+}
+
+void red_led_off(void)
+{
+        ath_reg_wr_nf(AR7240_GPIO_SET, GPIO_LED_RED);
+}
+
+void red_led_toggle(void)
+{
+        if (ath_reg_rd(AR7240_GPIO_OUT) & GPIO_LED_RED)
+                red_led_on();
+        else
+                red_led_off();
+}
+
+
+void all_led_on(void)
+{
+        status_led_on();
+        green_led_on();
+        red_led_on();
+}
+
+void all_led_off(void)
+{
+        status_led_off();
+        green_led_off();
+        red_led_off();
+}
+
+void gpio17_select_out()
+{
+unsigned int tmp=0;
+tmp = ath_reg_rd(AR7240_GPIO_FUNC4);
+ath_reg_wr_nf(AR7240_GPIO_FUNC4, (tmp & 0x00ff) );
+
+}
+
+#define GPIO_SWITCH_LOAD 0x3 //GPIO 0 and 1
+unsigned  int switch_boot_load()
+{
+  char val1=0,val2=0;
+  val1 =ath_reg_rd(AR7240_GPIO_IN) & GPIO_SWITCH_LOAD;
+	udelay(20000);//20ms
+  val2 =ath_reg_rd(AR7240_GPIO_IN) & GPIO_SWITCH_LOAD;
+  if(val1 == val2) return val1;
+  else{
+	printf("is default boot device \n");
+	return 0;
+	}
 }

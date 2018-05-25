@@ -82,6 +82,9 @@ uchar default_environment[] = {
 #ifdef COMMAND_LU
 	"lu="	COMMAND_LU 		"\0"
 #endif
+#ifdef COMMAND_LC
+	"lc="	COMMAND_LC 		"\0"
+#endif
 #ifdef VAR_UBOOT_ADDR
 	"uboot_addr="	MK_STR(VAR_UBOOT_ADDR) 		"\0"
 #endif
