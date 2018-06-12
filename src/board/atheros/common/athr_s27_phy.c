@@ -429,9 +429,9 @@ athrs27_phy_setup(int ethUnit)
            }
        }
        rd_val = s27_rd_phy(phyAddr,ATHR_PHY_CONTROL);
-       printf("%s ATHR_PHY_CONTROL %d :%x\n",__func__,phyAddr,rd_val);
+       //printf("%s ATHR_PHY_CONTROL %d :%x\n",__func__,phyAddr,rd_val);
        rd_val = s27_rd_phy(phyAddr,ATHR_PHY_SPEC_STATUS);
-       printf("%s ATHR_PHY_SPEC_STAUS %d :%x\n",__func__,phyAddr,rd_val);
+       //printf("%s ATHR_PHY_SPEC_STAUS %d :%x\n",__func__,phyAddr,rd_val);
     }
     if (!foundPhy) {
         return FALSE; /* No PHY's configured for this ethUnit */

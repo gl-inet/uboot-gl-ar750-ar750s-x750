@@ -2084,6 +2084,24 @@ endif
 ifdef ATH_SPI_CS1_GPIO
 	@echo "#define CONFIG_ATH_SPI_CS1_GPIO $(ATH_SPI_CS1_GPIO)" >>include/config.h
 endif
+ifdef GPIO_LED_STATUS
+	@echo "#define GPIO_LED_STATUS $(GPIO_LED_STATUS)" >>include/config.h
+endif
+ifdef GPIO_LED_GREEN
+	@echo "#define GPIO_LED_GREEN $(GPIO_LED_GREEN)" >>include/config.h
+endif
+ifdef GPIO_LED_RED
+	@echo "#define GPIO_LED_RED $(GPIO_LED_RED)" >>include/config.h
+endif
+ifdef GPIO_LED_LAN
+	@echo "#define GPIO_LED_LAN $(GPIO_LED_LAN)" >>include/config.h
+endif
+ifdef GPIO_LED_4G
+	@echo "#define GPIO_LED_4G $(GPIO_LED_4G)" >>include/config.h
+endif
+ifdef GPIO_RESET
+	@echo "#define GPIO_RESET $(GPIO_RESET)" >>include/config.h
+endif
 	@./mkconfig -a board953x mips mips board953x atheros
 
 ap120_config			: 	unconfig

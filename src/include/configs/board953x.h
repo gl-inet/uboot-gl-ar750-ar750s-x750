@@ -137,7 +137,7 @@
 #define COMMAND_LF "if ping $serverip; then tftp $loadaddr $firmware_name && erase $firmware_addr +$filesize && cp.b $fileaddr $firmware_addr $filesize && echo OK!; else ERROR! Server not reachable!; fi" 
 
 #define VAR_FIRMWARE_ADDR 0x9f060000
-#define VAR_FIRMWARE_NAME "openwrt-gl-ar750.bin"
+#define VAR_FIRMWARE_NAME "openwrt-gl-"CONFIG_BOARD_NAME".bin"
 
 #define COMMAND_LU "if ping $serverip; then tftp $loadaddr $uboot_name && erase $uboot_addr +$uboot_size && cp.b $fileaddr $uboot_addr $filesize && echo OK!; else ERROR! Server not reachable!; fi"
 
@@ -145,7 +145,7 @@
 
 #define VAR_UBOOT_ADDR  0x9f000000
 #define VAR_UBOOT_SIZE  0x00050000
-#define VAR_UBOOT_NAME  "uboot-gl-ar750.bin"
+#define VAR_UBOOT_NAME  "uboot-gl-"CONFIG_BOARD_NAME".bin"
 
 /*****************gl environment end************/
 /*-----------------------------------------------------------------------
