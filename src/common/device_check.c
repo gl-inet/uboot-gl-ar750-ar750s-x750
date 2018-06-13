@@ -14,6 +14,7 @@
 /* for isdigit() */
 #include <linux/ctype.h>
 #include <asm-mips/string.h>
+#include <config.h>
 
 #define  __DEBUG__
 #ifdef __DEBUG__
@@ -36,30 +37,9 @@ int check_nand()
 }
 #endif
 
-extern int do_ping (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 int check_tftp_file()
 {
-   	int argc=2;
-	char *argv[2];
-	argv[0] = "2";
-	argv[1] = "192.168.1.2";
-	if(do_ping(NULL,0,argc,argv))return 0;
-	tftp_file = 1;
-	run_command("tftp 80800000 openwrt-gl-ar750s.img",0);
-	if(tftp_file){
-		setenv("tmp_env","erase $firmware_addr +$kernelsize && nand erase && cp.b $fileaddr $firmware_addr $kernelsize && nand write $rootfs_addr 0 $filesize");
-		run_command("run tmp_env",0);
-	}
-
-#if (CONFIG_COMMANDS & CFG_CMD_NAND)	
-	if(0==check_nand()) return 0;
-	tftp_file = 1;
-	run_command("tftp 80080000 openwrt-gl-ar750s-ubi.img",0);
-	if(tftp_file){
-		setenv("tmp_env"," nand erase && nand write $fileaddr 0 $filesize");
-		run_command("run tmp_env",0);
-	}
-#endif
+	run_command("run lf",0);
 	return 0;
 }
 

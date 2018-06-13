@@ -580,9 +580,11 @@ skip_netloop:
 #  endif /* CFG_FAULT_ECHO_LINK_DOWN, ... */
 #endif /* CONFIG_MII, ... */
 #endif
+
 			x = timeHandler;
 			timeHandler = (thand_f *)0;
 			(*x)();
+			return -1;
 		}
 		switch (NetState) {
 

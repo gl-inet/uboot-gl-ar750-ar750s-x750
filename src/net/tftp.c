@@ -308,7 +308,6 @@ TftpHandler (uchar * pkt, unsigned dest, unsigned src, unsigned len)
 	}
 }
 
-
 static void
 TftpTimeout (void)
 {
@@ -378,7 +377,6 @@ TftpStart (void)
 
 	NetSetTimeout (TIMEOUT * CFG_HZ, TftpTimeout);
 	NetSetHandler (TftpHandler);
-
 	TftpServerPort = WELL_KNOWN_PORT;
 	TftpTimeoutCount = 0;
 	TftpState = STATE_RRQ;

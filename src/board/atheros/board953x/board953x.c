@@ -107,7 +107,8 @@ void ath_gpio_config(void)
 	ath_reg_rmw_set(GPIO_OE_ADDRESS, (1 << 15));
 	ath_reg_rmw_set(GPIO_OE_ADDRESS, (1 << 12));
 }
-
+void all_led_off();
+void status_led_on();
 int
 ath_mem_config(void)
 {
@@ -136,7 +137,8 @@ ath_mem_config(void)
 
 	ath_gpio_config();
 #endif /* !defined(CONFIG_ATH_EMULATION) */
-
+	all_led_off();
+	status_led_on();
 	return ath_ddr_find_size();
 }
 

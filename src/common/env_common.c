@@ -268,8 +268,6 @@ void env_relocate (void)
 	DEBUGF ("%s[%d] malloced ENV at %p\n", __FUNCTION__,__LINE__,env_ptr);
 #endif
 
-	all_led_off();
-	status_led_on();
 	/*
 	 * After relocation to RAM, we can always use the "memory" functions
 	 */
