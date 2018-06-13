@@ -172,140 +172,209 @@ int	checkboard(args)
 	return 0;
 }
 
-
+#if defined(GPIO_RESET)
 int reset_button_status(void)
 {
-        unsigned int gpio;
+	unsigned int gpio;
 
         gpio = ath_reg_rd(AR7240_GPIO_IN);
 
-#define GL_AR300M_GPIO_BTN_RESET 2
-        if (gpio & (1 << GL_AR300M_GPIO_BTN_RESET)) {
-                return(0);
-        } else {
-                return(1);
-        }
+	if (gpio & (1 << GPIO_RESET)) {
+		return(0);
+	} else {
+		return(1);
+	}
 }
+#else
+int reset_button_status(){return 1;}
+#endif
 
-#define GPIO_LED_STATUS (1 << 1)
-#define GPIO_LED_GREEN  (1 << 19)
-#define GPIO_LED_RED    (1 << 20)
-
+#if defined(GPIO_LED_STATUS)
 void status_led_on(void)
 {
-        unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_STATUS)
+	unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
+        if(led_GPIO_OE & (1<<GPIO_LED_STATUS))
         {
-                led_GPIO_OE  &= ~GPIO_LED_STATUS;
+                led_GPIO_OE  &= ~(1<<GPIO_LED_STATUS);
                 ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
         }
-	ath_reg_wr_nf(AR7240_GPIO_CLEAR, GPIO_LED_STATUS);
+        ath_reg_wr_nf(AR7240_GPIO_CLEAR, 1<<GPIO_LED_STATUS);
 }
 
 void status_led_off(void)
 {
         unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_STATUS)
+        if(led_GPIO_OE & (1<<GPIO_LED_STATUS))
         {
-                led_GPIO_OE  &= ~GPIO_LED_STATUS;
+                led_GPIO_OE  &= ~(1<<GPIO_LED_STATUS);
                 ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
         }
-	ath_reg_wr_nf(AR7240_GPIO_SET, GPIO_LED_STATUS);
+        ath_reg_wr_nf(AR7240_GPIO_SET, 1<<GPIO_LED_STATUS);
 }
 
 void status_led_toggle(void)
 {
-        unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_GREEN)
-        {
-                led_GPIO_OE  &= ~GPIO_LED_GREEN;
-                ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
-        }
-	if (ath_reg_rd(AR7240_GPIO_OUT) & GPIO_LED_STATUS)
-               	status_led_on();
-       	else
-               	status_led_off();
+        if (ath_reg_rd(AR7240_GPIO_OUT) & (1<<GPIO_LED_STATUS))
+                status_led_on();
+        else
+                status_led_off();
 }
+#else
+void status_led_on(){}
+void status_led_off(){}
+void status_led_toggle(){}
+#endif
 
+#if defined(GPIO_LED_GREEN)
 void green_led_on(void)
 {
         unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_GREEN)
-	{
-		led_GPIO_OE  &= ~GPIO_LED_GREEN;
-        	ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
-	}
-	ath_reg_wr_nf(AR7240_GPIO_CLEAR, GPIO_LED_GREEN);
+        if(led_GPIO_OE & (1<<GPIO_LED_GREEN))
+        {       
+                led_GPIO_OE  &= ~(1<<GPIO_LED_GREEN);
+                ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
+        }
+        ath_reg_wr_nf(AR7240_GPIO_CLEAR,1<< GPIO_LED_GREEN);
 }
 
 void green_led_off(void)
 {
         unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_GREEN)
+        if(led_GPIO_OE & (1<<GPIO_LED_GREEN))
         {
-                led_GPIO_OE  &= ~GPIO_LED_GREEN;
+                led_GPIO_OE  &= ~(1<<GPIO_LED_GREEN);
                 ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
-	}
-	ath_reg_wr_nf(AR7240_GPIO_SET, GPIO_LED_GREEN);
+        }
+        ath_reg_wr_nf(AR7240_GPIO_SET, 1<<GPIO_LED_GREEN);
 }
 
 void green_led_toggle(void)
 {
-        unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_GREEN)
-        {
-                led_GPIO_OE  &= ~GPIO_LED_GREEN;
-                ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
-        }
-	if (ath_reg_rd(AR7240_GPIO_OUT) & GPIO_LED_GREEN)
+        if (ath_reg_rd(AR7240_GPIO_OUT) & (1<<GPIO_LED_GREEN))
                 green_led_on();
         else
                 green_led_off();
 }
+#else
+void green_led_on(){}
+void green_led_off(){}
+void green_led_toggle(){}
+#endif
 
-
+#if defined(GPIO_LED_RED)
 void red_led_off(void)
 {
         unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_RED)
+        if(led_GPIO_OE & (1<<GPIO_LED_RED))
         {
-                led_GPIO_OE  &= ~GPIO_LED_RED;
+                led_GPIO_OE  &= ~(1<<GPIO_LED_RED);
                 ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
         }
-	ath_reg_wr_nf(AR7240_GPIO_CLEAR, GPIO_LED_RED);
+        ath_reg_wr_nf(AR7240_GPIO_CLEAR, 1<<GPIO_LED_RED);
 }
 
 void red_led_on(void)
 {
         unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_RED)
-        {
-                led_GPIO_OE  &= ~GPIO_LED_RED;
+        if(led_GPIO_OE & (1<<GPIO_LED_RED))
+        {       
+                led_GPIO_OE  &= ~(1<<GPIO_LED_RED);
                 ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
         }
-	ath_reg_wr_nf(AR7240_GPIO_SET, GPIO_LED_RED);
+        ath_reg_wr_nf(AR7240_GPIO_SET, 1<<GPIO_LED_RED);
 }
 
 void red_led_toggle(void)
 {
+        if (ath_reg_rd(AR7240_GPIO_OUT) & (1<<GPIO_LED_RED))
+                red_led_on();
+        else
+                red_led_off();
+}
+#else
+void red_led_on(){}
+void red_led_off(){}
+void red_led_toggle(){}
+#endif
+
+#if defined(GPIO_LED_LAN)
+void lan_led_on(void)
+{
         unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
-        if(led_GPIO_OE & GPIO_LED_RED)
+        if(led_GPIO_OE & (1<<GPIO_LED_LAN))
         {
-                led_GPIO_OE  &= ~GPIO_LED_RED;
+                led_GPIO_OE  &= ~(1<<GPIO_LED_LAN);
                 ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
         }
-	if (ath_reg_rd(AR7240_GPIO_OUT) & GPIO_LED_RED)
-               	red_led_off();
-    	else
-               	red_led_on();
+        ath_reg_wr_nf(AR7240_GPIO_CLEAR, 1<<GPIO_LED_LAN);
 }
 
+void lan_led_off(void)
+{
+        unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
+        if(led_GPIO_OE & (1<<GPIO_LED_LAN))
+        {
+                led_GPIO_OE  &= ~(1<<GPIO_LED_LAN);
+                ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
+        }
+        ath_reg_wr_nf(AR7240_GPIO_SET, 1<<GPIO_LED_LAN);
+}
 
+void lan_led_toggle(void)
+{
+        if (ath_reg_rd(AR7240_GPIO_OUT) & (1<<GPIO_LED_LAN))
+                red_led_on();
+        else
+                red_led_off();
+}
+#else
+void lan_led_on(){}
+void lan_led_off(){}
+void lan_led_toggle(){}
+#endif
+
+#if defined(GPIO_LED_4G)
+void g4_led_on(void)
+{
+	 unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
+        if(led_GPIO_OE & (1<<GPIO_LED_4G))
+        {
+                led_GPIO_OE  &= ~(1<<GPIO_LED_4G);
+                ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
+        }
+        ath_reg_wr_nf(AR7240_GPIO_CLEAR, 1<<GPIO_LED_4G);
+}
+
+void g4_led_off(void)
+{
+         unsigned int led_GPIO_OE  = ath_reg_rd(AR7240_GPIO_OE);
+        if(led_GPIO_OE & (1<<GPIO_LED_4G))
+        {
+                led_GPIO_OE  &= ~(1<<GPIO_LED_4G);
+                ath_reg_wr(AR7240_GPIO_OE,led_GPIO_OE);
+        }
+        ath_reg_wr_nf(AR7240_GPIO_SET, 1<<GPIO_LED_4G);
+}
+
+void g4_led_toggle(void)
+{
+        if (ath_reg_rd(AR7240_GPIO_OUT) & (1<<GPIO_LED_4G))
+                red_led_on();
+        else
+                red_led_off();
+}
+#else
+void g4_led_on(){}
+void g4_led_off(){}
+void g4_led_toggle(){}
+#endif
 void all_led_on(void)
 {
         status_led_on();
         green_led_on();
         red_led_on();
+	lan_led_on();
+	g4_led_on();
 }
 
 void all_led_off(void)
@@ -313,7 +382,10 @@ void all_led_off(void)
         status_led_off();
         green_led_off();
         red_led_off();
+	lan_led_off();
+	g4_led_off();
 }
+
 
 void gpio17_select_out()
 {

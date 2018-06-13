@@ -3309,7 +3309,7 @@ ifneq (,$(findstring $(CFG_BOARD_TYPE),ap151 ap151-020 tb754)) #{
 	@echo '#define CFG_ATH_GMAC_NMACS	2'	>>include/config.h
 	@echo '#define CFG_ATH_GE1_IS_CONNECTED 1' 	>>include/config.h
 endif #}
-ifneq (,$(findstring $(CFG_BOARD_TYPE), ap152 tb755)) #{
+ifneq (,$(findstring $(CFG_BOARD_TYPE), ap152 tb755 ar750s)) #{
 	@echo '#define CFG_ATH_GMAC_NMACS	1'	>>include/config.h
 	@echo '#define CFG_ATH_GE1_IS_CONNECTED 1' 	>>include/config.h
 	@echo '#define CONFIG_ATHRS_GMAC_SGMII  1'      >>include/config.h
@@ -3323,7 +3323,7 @@ ifeq ($(ATH_SPI_NAND),1)
 endif
 endif
 
-ifneq (,$(findstring $(CFG_BOARD_TYPE), ap152)) #{
+ifneq (,$(findstring $(CFG_BOARD_TYPE), ap152 ar750s)) #{
 	@echo '#define UART_RX18_TX22           1'      >>include/config.h
 endif #}
 ifeq ($(CFG_BOARD_TYPE), ap151-020)
@@ -3346,7 +3346,7 @@ ifneq (,$(findstring $(CFG_BOARD_TYPE),dragonflyemu)) #{
 	@echo '#define CONFIG_ATHRS_GMAC_SGMII  1'      >>include/config.h
 endif #}
 
-ifeq ($(CFG_BOARD_TYPE), ap152)
+ifeq ($(CFG_BOARD_TYPE), ap152 ar750s)
 	@echo '#define CONFIG_ATHRS_GMAC_SGMII	1'	>>include/config.h
 endif
 
@@ -3368,6 +3368,24 @@ endif
 
 ifdef FLASH_SIZE
 	@echo '#define FLASH_SIZE	$(FLASH_SIZE)'	>>include/config.h
+endif
+ifdef GPIO_LED_STATUS
+	@echo "#define GPIO_LED_STATUS $(GPIO_LED_STATUS)" >>include/config.h
+endif
+ifdef GPIO_LED_GREEN
+	@echo "#define GPIO_LED_GREEN $(GPIO_LED_GREEN)" >>include/config.h
+endif
+ifdef GPIO_LED_RED
+	@echo "#define GPIO_LED_RED $(GPIO_LED_RED)" >>include/config.h
+endif
+ifdef GPIO_LED_LAN
+	@echo "#define GPIO_LED_LAN $(GPIO_LED_LAN)" >>include/config.h
+endif
+ifdef GPIO_LED_4G
+	@echo "#define GPIO_LED_4G $(GPIO_LED_4G)" >>include/config.h
+endif
+ifdef GPIO_RESET
+	@echo "#define GPIO_RESET $(GPIO_RESET)" >>include/config.h
 endif
 	@./mkconfig -a board956x mips mips board956x atheros
 
