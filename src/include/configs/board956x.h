@@ -153,6 +153,8 @@
 
 #define COMMAND_LU "if ping $serverip; then tftp $loadaddr $uboot_name && erase $uboot_addr +$uboot_size && cp.b $fileaddr $uboot_addr $filesize && echo OK!; else ERROR! Server not reachable!; fi"
 
+#define COMMAND_LC "tftp 0x81000000 config.bin && cp.b 0x9f050040 0x81000040 0xffc0 && cp.b 0x81000000 0x81001002 0x06 && erase 0x9f050000 +0xffff && cp.b 0x81000000 0x9f050000 0xffff"
+
 #define VAR_UBOOT_ADDR	0x9f000000
 #define VAR_UBOOT_SIZE	0x00050000
 #define VAR_UBOOT_NAME	"uboot-gl-"CONFIG_BOARD_NAME".bin"
