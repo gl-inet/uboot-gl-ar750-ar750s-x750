@@ -16,16 +16,19 @@ LEDE代码树不行，编译的时候报错，没有细看
 ```
 Target System (Atheros AR7xxx/AR9xxx)  --->
 Boot Loaders  --->
-	<*> qca-legacy-uboot-ap152-16M.......................... U-boot for ap152-16M
+	<*> GL-uboot-ar750s.......................... U-boot for AR750S
 ```
 编译配置(ar750)
 --
 ```
 Target System (Atheros AR7xxx/AR9xxx)  --->
 Boot Loaders  --->
-	<*> qca-legacy-uboot-cus531-nand...................... U-boot for cus531-nand
-编译
+	<*> GL-uboot-ar750.......................... U-boot for AR750
+```
+编译配置(x750-4g)
 --
 ```
-make package/gl-9563-uboot/compile V=s
+Target System (Atheros AR7xxx/AR9xxx)  --->
+Boot Loaders  --->
+	<*> GL-uboot-x750-4g.......................... U-boot for x750-4g
 ```
