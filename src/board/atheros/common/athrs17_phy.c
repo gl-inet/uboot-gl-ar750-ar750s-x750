@@ -47,7 +47,11 @@ typedef enum {
 #define DRV_PRINT(DBG_SW,X)
 
 #define ATHR_LAN_PORT_VLAN          1
-#define ATHR_WAN_PORT_VLAN          2
+#define ATHR_LAN1_PORT_VLAN          2
+#define ATHR_LAN2_PORT_VLAN          3
+#define ATHR_LAN3_PORT_VLAN          4
+
+#define ATHR_WAN_PORT_VLAN          5
 
 #define ENET_UNIT_GE0 0
 #define ENET_UNIT_GE1 1
@@ -109,7 +113,7 @@ static athrPhyInfo_t athrPhyInfo[] = {
 		ENET_UNIT,
 		0,
 		ATHR_PHY1_ADDR,
-		ATHR_LAN_PORT_VLAN
+		ATHR_LAN1_PORT_VLAN
 	},
 	{
 		TRUE,   /* phy port 2 -- LAN port 2 */
@@ -117,7 +121,7 @@ static athrPhyInfo_t athrPhyInfo[] = {
 		ENET_UNIT,
 		0,
 		ATHR_PHY2_ADDR,
-		ATHR_LAN_PORT_VLAN
+		ATHR_LAN2_PORT_VLAN
 	},
 	{
 		TRUE,   /* phy port 3 -- LAN port 3 */
@@ -125,7 +129,7 @@ static athrPhyInfo_t athrPhyInfo[] = {
 		ENET_UNIT,
 		0,
 		ATHR_PHY3_ADDR,
-		ATHR_LAN_PORT_VLAN
+		ATHR_LAN3_PORT_VLAN
 	},
 	{
 		TRUE,   /* phy port 4 -- WAN port or LAN port 4 */
@@ -205,7 +209,7 @@ static void phy_mode_setup(void)
 
 void athrs17_vlan_config()
 {
-	athrs17_reg_write(S17_P0LOOKUP_CTRL_REG, 0x0014001e);
+	/*athrs17_reg_write(S17_P0LOOKUP_CTRL_REG, 0x0014001e);
 	athrs17_reg_write(S17_P0VLAN_CTRL0_REG, 0x10001);
 
 	athrs17_reg_write(S17_P1LOOKUP_CTRL_REG, 0x0014001d);
@@ -224,7 +228,27 @@ void athrs17_vlan_config()
 	athrs17_reg_write(S17_P5VLAN_CTRL0_REG, 0x20001);
 
 	athrs17_reg_write(S17_P6LOOKUP_CTRL_REG, 0x00140020);
-	athrs17_reg_write(S17_P6VLAN_CTRL0_REG, 0x20001);
+	athrs17_reg_write(S17_P6VLAN_CTRL0_REG, 0x20001);*/
+
+		int phy_addr=0,count=0;
+		unsigned int old_val=0;
+		count=sizeof(athrPhyInfo)/sizeof(athrPhyInfo[0]);
+
+		/*port0 connect to cpu,setup port1 - port5*/
+		for(phy_addr=1;phy_addr < count;phy_addr++){
+
+			/*set vid*/
+			old_val = athrs17_reg_read(S17_P0VLAN_CTRL0_REG+phy_addr*8);
+			old_val &= ~( (0xfff << 16) | 0xfff );
+			old_val |= (ATHR_VLAN_TABLE_SETTING(phy_addr) << 16) | ATHR_VLAN_TABLE_SETTING(phy_addr);
+			athrs17_reg_write(S17_P0VLAN_CTRL0_REG+phy_addr*8,old_val);
+
+			/*enable valn*/
+			old_val = athrs17_reg_read(S17_P0VLAN_CTRL1_REG+phy_addr*8);
+			old_val &= ~( 0x3 << 12 );
+			athrs17_reg_write(S17_P0VLAN_CTRL1_REG+phy_addr*8,old_val);
+
+		}
 
 
 }
@@ -335,8 +359,8 @@ void athrs17_reg_init()
                               S17_MAC6_RGMII_RXCLK_DELAY | (1 << S17_MAC6_RGMII_TXCLK_SHIFT) | \
                               (2 << S17_MAC6_RGMII_RXCLK_SHIFT));
 	athrs17_reg_write(S17_P6STATUS_REG, 0x7e);
-        athrs17_vlan_config();
 #endif
+	athrs17_vlan_config();
 	athr17_init_flag = 1;
 	printf("%s: complete\n",__func__);
 }
