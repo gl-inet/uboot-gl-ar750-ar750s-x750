@@ -287,9 +287,9 @@ void red_led_on(void)
 void red_led_toggle(void)
 {
         if (ath_reg_rd(AR7240_GPIO_OUT) & (1<<GPIO_LED_RED))
-                red_led_on();
-        else
                 red_led_off();
+        else
+                red_led_on();
 }
 #else
 void red_led_on(){}

@@ -15,7 +15,7 @@
 #if (CONFIG_COMMANDS & CFG_CMD_NET)
 
 #define WELL_KNOWN_PORT	69		/* Well known TFTP port #		*/
-#define TIMEOUT		1		/* Seconds to timeout for a lost pkt	*/
+#define TIMEOUT		2		/* Seconds to timeout for a lost pkt	*/
 #ifndef	CONFIG_NET_RETRY_COUNT
 # define TIMEOUT_COUNT	0		/* # of timeouts before giving up  */
 #else

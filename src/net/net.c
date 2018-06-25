@@ -285,6 +285,7 @@ char Tftp_stop;
 int
 NetLoop(proto_t protocol)
 {
+	
 	bd_t *bd = gd->bd;
 #if defined(CFG_ATHRS26_PHY) && defined(CFG_ATHRHDR_EN)
 	static int AthrHdr_Flag = 0;
@@ -586,6 +587,7 @@ skip_netloop:
 			(*x)();
 			return -1;
 		}
+		
 		switch (NetState) {
 
 		case NETLOOP_RESTART:
