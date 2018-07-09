@@ -420,7 +420,6 @@ static void ath_gmac_get_ethaddr(struct eth_device *dev)
 #ifndef CONFIG_ATH_EMULATION
 
 	eeprom = ath_gmac_mac_addr_loc();
-
 	if (strcmp(dev->name, "eth0") == 0) {
 		memcpy(mac, eeprom, 6);
 	} else if (strcmp(dev->name, "eth1") == 0) {
@@ -444,7 +443,7 @@ static void ath_gmac_get_ethaddr(struct eth_device *dev)
 		mac[5] = 0xad;
 		printf("No valid address in Flash. Using fixed address\n");
 	} else {
-		printf("Fetching MAC Address from 0x%p\n", __func__, eeprom);
+		printf("Fetching MAC Address from 0x%p\n", eeprom);
 	}
 }
 

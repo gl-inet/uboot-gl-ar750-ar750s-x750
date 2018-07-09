@@ -539,8 +539,12 @@
 ** information for the two Merlin devices.
 ** NOTE: **This will change with different flash configurations**
 */
+#if (FLASH_SIZE == 32)
+#define BOARDCAL			(CFG_FLASH_BASE + 0x01000000 - 0x10000)
+#else
+#define BOARDCAL                        (CFG_FLASH_BASE + CFG_FLASH_SIZE - 0x10000)
+#endif
 
-#define BOARDCAL			(CFG_FLASH_BASE + CFG_FLASH_SIZE - 0x10000)
 #define WLANCAL				(BOARDCAL + 0x1000)
 #define ATHEROS_PRODUCT_ID		137
 #define CAL_SECTOR			(CFG_MAX_FLASH_SECT - 1)
