@@ -9,12 +9,12 @@ readme:
 --
 ```
 选择一个编译好的openwrt树，将代码clone到openwrt/package/目录下，执行make menuconfig进行配置。
-LEDE代码树不行，编译的时候报错
 ```
 编译配置(ar750s)
 --
 ```
 Target System (Atheros AR7xxx/AR9xxx)  --->
+Subtarget (Generic)  --->
 Boot Loaders  --->
 	<*> GL-uboot-ar750s.......................... U-boot for AR750S
 ```
@@ -22,6 +22,7 @@ Boot Loaders  --->
 --
 ```
 Target System (Atheros AR7xxx/AR9xxx)  --->
+Subtarget (Generic)  --->
 Boot Loaders  --->
 	<*> GL-uboot-ar750.......................... U-boot for AR750
 ```
@@ -29,9 +30,10 @@ Boot Loaders  --->
 --
 ```
 Target System (Atheros AR7xxx/AR9xxx)  --->
+Subtarget (Generic)  --->
 Boot Loaders  --->
 	<*> GL-uboot-x750-4g.......................... U-boot for x750-4g
 ```
-make package/uboot-gl-ar750-ar750s-x750/compile V=s
+make package/uboot-gl-ar750-ar750s-x750/{clean,compile} V=s
 
-编译好的二进制在openwrt/bin/ar71xx/目录下
+编译好的二进制在openwrt/bin/targets/ar71xx/generic/目录下
