@@ -223,7 +223,7 @@ struct nand_ecclayout {
 struct mtd_info nand_info[CFG_MAX_NAND_DEVICE];
 int nand_curr_device = 0;
 
-inline unsigned
+static inline unsigned
 ath_spi_nand_get_blk_state(struct mtd_info *mtd, loff_t b)
 {
 	unsigned		x, y;
@@ -239,7 +239,7 @@ ath_spi_nand_get_blk_state(struct mtd_info *mtd, loff_t b)
 	return (sc->bbt[x] >> (y * 2)) & 0x3;
 }
 
-inline void
+static inline void
 ath_spi_nand_set_blk_state(struct mtd_info *mtd, loff_t b, unsigned state)
 {
 	unsigned		x, y;
@@ -259,7 +259,7 @@ ath_spi_nand_set_blk_state(struct mtd_info *mtd, loff_t b, unsigned state)
  * Option 0: GD5F1GQ4UAYIG, MX35LF1GE4AB, MX35LF2GE4AB
  * Option 1: GD5F1GQ4XC, GD5F2GQ4XC
  */
-inline int
+static inline int
 ath_spi_nand_read_id(int option)
 {
 	uint32_t id;
